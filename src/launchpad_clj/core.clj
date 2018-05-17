@@ -61,5 +61,19 @@
 (defn- call-to-java-set [lp ^Pad pad ^Color color]
   (.set lp pad color))
 
-(defn set-light [{lp :lp-java} pad color]
+(defn set-light
+  "sets the pad at `pad` to `color` on launchpad `lp`"
+  [{lp :lp-java} pad color]
   (call-to-java-set lp (pad-to-java pad) (color-to-java color)))
+
+(defn set-all
+  "sets the entire launchpad grid to `color`"
+  [lp color]
+  (dorun
+    (map (fn [x] 
+           (dorun (map (fn [y] (set-light lp [x y] color))
+                (range 8))))
+         (range 8))))
+
+(defn clear [lp]
+  (set-all lp :r0g0))
