@@ -56,7 +56,14 @@
   ([]
    (make-launchpad :ch-1))
   ([ch]
-   {:lp-java (Launchpad. (ch-to-java ch))}))
+   {:lp-java (Launchpad. (ch-to-java ch))})
+  ([ch fn-cb] {:lp-java (Launchpad. (ch-to-java ch)
+                                    (reify LaunchpadReceiver
+                                      (receive [this pad] ;TODO Get Note_Off
+                                        (fn-cb {:x (.getX pad)
+                                                :y (.getY pad)
+                                                :command (.getCommand pad)
+                                                :code (.getCode pad)}))))}))
 
 (defn- call-to-java-set [lp ^Pad pad ^Color color]
   (.set lp pad color))
